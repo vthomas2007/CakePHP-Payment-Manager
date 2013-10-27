@@ -1,0 +1,24 @@
+{
+    "name": "asugai/cake-php-payment-manager",
+    "type": "cakephp-plugin",
+    "description": "A stripe.com-based payment manager for CakePHP",
+    "keywords": ["payments", "cakephp", "email", "push", "urban airship", "twilio", "sms", "api"],
+    "homepage": "http://github.com/asugai/cake-php-payment-manager",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andre Sugai",
+            "email": "andre@orainteractive.com"
+        }
+    ],
+    "require": {
+        "composer/installers": "~1.0",
+        "stripe/stripe-php": ">=1.8.3"
+    },
+    "config": {
+        "vendor-dir": "Vendor"
+    },
+    "extra": {
+        "installer-name": "PaymentnManager"
+    }
+}

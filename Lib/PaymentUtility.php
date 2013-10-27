@@ -66,8 +66,7 @@ class PaymentUtility
     public static function userPayout($recipient_id, $amount, $paidMarks, $currency = 'usd')
     {
         Stripe::setApiKey(Configure::read('Stripe.keys.secret'));
-        try {
-            
+        try {  
             $description = [];
             
             foreach ($paidMarks as $paid) {

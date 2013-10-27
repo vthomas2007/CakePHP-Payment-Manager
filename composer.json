@@ -19,6 +19,6 @@
         "vendor-dir": "Vendor"
     },
     "extra": {
-        "installer-name": "PaymentnManager"
+        "installer-name": "PaymentManager"
     }
 }

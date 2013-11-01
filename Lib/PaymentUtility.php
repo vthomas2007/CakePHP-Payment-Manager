@@ -29,15 +29,15 @@ class PaymentUtility
                 'card' => $token, 
                 'email' => $email
             ]);
-                            
-            if (empty($customer['active_card'])) {
-                return false;
+
+            if (empty($customer['cards']->data[0])) {
+                throw new ApiException('There was an error adding this credit card, please try again later.');
             }
             
-            $customer_card = $customer['active_card']->__toArray();
+            $customer_card = $customer['cards']->data[0]->__toArray();
              
             if ($customer_card['cvc_check'] != 'pass') {
-                return false;
+                throw new ApiException('CVC check failed, please check your information.');
             }
         } catch (Exception $e) {
             throw new ApiException($e->getMessage());

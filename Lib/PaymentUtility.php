@@ -120,30 +120,16 @@ class PaymentUtility
         return $charge;
     }
     
-    public static function createTestToken(){
-        Stripe::setApiKey(Configure::read('Stripe.keys.secret'));
-        $token = Stripe_Token::create(["card" => ["number" => "4242424242424242", "exp_month" => 4, "exp_year" => 2016, "cvc" => 888]]);
-        return $token->id;
-    }
-
-    public static function getTestToken()
+    public static function createTestToken($number = '4242424242424242', $exp_month = 4, $exp_year = 2016, $cvc = 888)
     {
         Stripe::setApiKey(Configure::read('Stripe.keys.secret'));
-        $data = ["card" =>["number" => "4012888888881881", "exp_month" => 2, "exp_year" => 2016, "cvc" => 314]];
-        return Stripe_Token::create($data)->id;
+        return Stripe_Token::create(["card" => compact('number', 'exp_month', 'exp_year', 'cvc')])->id;
     }
-    public static function getTestToken2()
+    
+    public static function createTestBank($account_number = '000123456789', $routing_number = '110000000', $country = 'US')
     {
         Stripe::setApiKey(Configure::read('Stripe.keys.secret'));
-        $data = ["card" => ["number" => "4000000000000002", "exp_month" => 2, "exp_year" => 2016, "cvc" => 314]];
-        return Stripe_Token::create($data)->id;
-    }
-
-    public static function getTestBank()
-    {
-        Stripe::setApiKey(Configure::read('Stripe.keys.secret'));
-        $data = ["bank_account" =>["account_number" => "000123456789",  "country"=>"US", "routing_number"=> '110000000']];
-        return Stripe_Token::create($data)->id;
+        return Stripe_Token::create(["bank_account" => compact('account_number', 'routing_number', 'country')])->id;
     }
     
 }

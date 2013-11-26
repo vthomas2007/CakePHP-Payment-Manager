@@ -120,6 +120,52 @@ class PaymentUtility
         return $charge;
     }
     
+    public static function checkBalance()
+    {
+        Stripe::setApiKey(Configure::read('Stripe.keys.secret'));
+        
+        try{
+            $balance = Stripe_Balance::retrieve();
+        } catch(Stripe_CardError $e) {
+            return $e->getMessage();
+        } catch (Stripe_InvalidRequestError $e) {
+            return $e->getMessage();
+        } catch (Stripe_AuthenticationError $e) {
+            return $e->getMessage();
+        } catch (Stripe_ApiConnectionError $e) {
+            return $e->getMessage();
+        } catch (Stripe_Error $e) {
+            return $e->getMessage();
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+        
+        return $balance;
+    }
+    
+    public static function checkBalanceTransaction($transactionId)
+    {
+        Stripe::setApiKey(Configure::read('Stripe.keys.secret'));
+        
+        try{
+            $balanceTransaction = Stripe_BalanceTransaction::retrieve($transactionId);
+        } catch(Stripe_CardError $e) {
+            return $e->getMessage();
+        } catch (Stripe_InvalidRequestError $e) {
+            return $e->getMessage();
+        } catch (Stripe_AuthenticationError $e) {
+            return $e->getMessage();
+        } catch (Stripe_ApiConnectionError $e) {
+            return $e->getMessage();
+        } catch (Stripe_Error $e) {
+            return $e->getMessage();
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+        
+        return $balanceTransaction;
+    }
+    
     public static function createTestToken($number = '4242424242424242', $exp_month = 4, $exp_year = 2016, $cvc = 888)
     {
         Stripe::setApiKey(Configure::read('Stripe.keys.secret'));

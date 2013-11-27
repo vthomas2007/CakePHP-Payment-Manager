@@ -126,8 +126,6 @@ class PaymentUtility
         
         try{
             $balance = Stripe_Balance::retrieve();
-        } catch(Stripe_CardError $e) {
-            return $e->getMessage();
         } catch (Stripe_InvalidRequestError $e) {
             return $e->getMessage();
         } catch (Stripe_AuthenticationError $e) {
@@ -149,8 +147,6 @@ class PaymentUtility
         
         try{
             $balanceTransaction = Stripe_BalanceTransaction::retrieve($transactionId);
-        } catch(Stripe_CardError $e) {
-            return $e->getMessage();
         } catch (Stripe_InvalidRequestError $e) {
             return $e->getMessage();
         } catch (Stripe_AuthenticationError $e) {

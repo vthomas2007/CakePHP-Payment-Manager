@@ -37,7 +37,7 @@ class PaymentUtility
             $customer_card = $customer['cards']->data[0]->__toArray();
              
             if ($customer_card['cvc_check'] != 'pass') {
-                return 'CVC check failed, please check your information.';
+                return 'CVV2/CVC2 check failed, please check your information.';
             }
         } catch (Exception $e) {
             return $e->getMessage();

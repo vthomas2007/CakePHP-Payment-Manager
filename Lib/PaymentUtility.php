@@ -13,7 +13,7 @@ class PaymentUtility
             
             $data =  $response[$type]->__toArray();
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage());
+            return $e->getMessage();
         }
         
         return $data['fingerprint'];
@@ -31,16 +31,16 @@ class PaymentUtility
             ]);
 
             if (empty($customer['cards']->data[0])) {
-                throw new ApiException('There was an error adding this credit card, please try again later.');
+                return 'There was an error adding this credit card, please try again later.';
             }
             
             $customer_card = $customer['cards']->data[0]->__toArray();
              
             if ($customer_card['cvc_check'] != 'pass') {
-                throw new ApiException('CVC check failed, please check your information.');
+                return 'CVC check failed, please check your information.';
             }
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage());
+            return $e->getMessage();
         }
         
         return $customer;
@@ -57,7 +57,7 @@ class PaymentUtility
                 'name' => $name
             ]);
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage());
+            return $e->getMessage();
         }
         
         return $recipient;

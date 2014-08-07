@@ -4,17 +4,9 @@ App::import('Vendor', 'Stripe', ['file' => 'stripe/stripe-php/lib/Stripe.php']);
     
 class PaymentClient
 {
-    public function getFingerprint($token, $type = 'card')
+    public function createCustomer($card, $email, $description)
     {
-        $response = $this->makeStripeCall('Stripe_Token', 'retrieve', $token);
-        $data = $response[$type]->__toArray();
-        
-        return $data['fingerprint'];
-    }
-    
-    public function createCustomer($description, $card, $email)
-    {
-        $params = compact('description', 'card', 'email');
+        $params = compact('card', 'email', 'description');
 
         $customer = $this->makeStripeCall('Stripe_Customer', 'create', $params);
         $this->checkCustomerCardData($customer);
@@ -29,31 +21,43 @@ class PaymentClient
         return $this->makeStripeCall('Stripe_Recipient', 'create', $params);
     }
     
-    public static function userPayout($recipient, $amount, $description, $currency = 'usd')
+    public function userPayout($recipient, $amount, $description, $currency = 'usd')
     {
         $params = compact('recipient', 'amount', 'description', 'currency');
         
         return $this->makeStripeCall('Stripe_Transfer', 'create', $params);
     }
     
-    public static function chargeCustomer($customer, $amount, $description, $currency = 'usd')
+    public function chargeCustomer($customer, $amount, $description, $currency = 'usd')
     {
         $params = compact('customer', 'amount', 'description', 'currency');
         
         return $this->makeStripeCall('Stripe_Charge', 'create', $params);
     }
     
-    public static function checkBalance()
+    public function checkBalance()
     {
         return $this->makeStripeCall('Stripe_Balance', 'retrieve');
     }
     
-    public static function checkBalanceTransaction($transactionId)
+    public function checkBalanceTransaction($transactionId)
     {
         return $this->makeStripeCall('Stripe_BalanceTransaction', 'retrieve', $transactionId);
     }
     
-    public static function createTestToken($number = '4242424242424242', $exp_month = 12, $exp_year = 2020, $cvc = 123)
+    public function getStripeTokenData($token, $type = 'card')
+    {
+        $response = $this->makeStripeCall('Stripe_Token', 'retrieve', $token);
+        
+        return $response[$type]->__toArray();
+    }
+    
+    public function getStripeTokenAttribute($data, $attr)
+    {
+        return $data[$attr];
+    }
+    
+    public function createTestToken($number = '4242424242424242', $exp_month = 12, $exp_year = 2020, $cvc = 123)
     {
         $params = ['card' => compact('number', 'exp_month', 'exp_year', 'cvc')];
         
@@ -62,7 +66,7 @@ class PaymentClient
         return $data->id;
     }
     
-    public static function createTestBank($account_number = '000123456789', $routing_number = '110000000', $country = 'US')
+    public function createTestBank($account_number = '000123456789', $routing_number = '110000000', $country = 'US')
     {
         $params = ['bank_account' => compact('account_number', 'routing_number', 'country')];
         
@@ -77,22 +81,22 @@ class PaymentClient
         
         try {
             if (is_null($params)) {
-                $reply = {$object}::{$call}();
+                $reply = $object::{$call}();
             } else {
-                $reply = {$object}::{$call}($params);
+                $reply = $object::{$call}($params);
             }
         } catch (Stripe_CardError $e) {
-            return $e->getMessage();
+            throw new ApiException($e->getMessage());
         } catch (Stripe_InvalidRequestError $e) {
-            return $e->getMessage();
+            throw new ApiException($e->getMessage());
         } catch (Stripe_AuthenticationError $e) {
-            return $e->getMessage();
+            throw new ApiException($e->getMessage());
         } catch (Stripe_ApiConnectionError $e) {
-            return $e->getMessage();
+            throw new ApiException($e->getMessage());
         } catch (Stripe_Error $e) {
-            return $e->getMessage();
+            throw new ApiException($e->getMessage());
         } catch (Exception $e) {
-            return $e->getMessage();
+            throw new ApiException($e->getMessage());
         }
         
         return $reply;

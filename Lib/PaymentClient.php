@@ -14,9 +14,9 @@ class PaymentClient
         return $customer;
     }
     
-    public function createRecipient($bank_account, $name, $description, $type = 'individual')
+    public function createRecipient($bank_account, $name, $description, $type = 'individual', $tax_id = null)
     {
-        $params = compact('bank_account', 'name', 'description', 'type');
+        $params = compact('bank_account', 'name', 'description', 'type', 'tax_id');
         
         return $this->makeStripeCall('Stripe_Recipient', 'create', $params);
     }

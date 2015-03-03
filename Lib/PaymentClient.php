@@ -1,6 +1,4 @@
 <?php
-
-App::import('Vendor', 'Stripe', ['file' => 'stripe/stripe-php/lib/Stripe.php']);
     
 class PaymentClient
 {
@@ -8,7 +6,7 @@ class PaymentClient
     {
         $params = compact('card', 'email', 'description');
 
-        $customer = $this->makeStripeCall('Stripe_Customer', 'create', $params);
+        $customer = $this->makeStripeCall('\Stripe\Customer', 'create', $params);
         $this->checkCustomerCardData($customer);
         
         return $customer;
@@ -20,36 +18,36 @@ class PaymentClient
         if (!empty($tax_id)) {
             $params['tax_id'] = $tax_id;
         }
-        return $this->makeStripeCall('Stripe_Recipient', 'create', $params);
+        return $this->makeStripeCall('\Stripe\Recipient', 'create', $params);
     }
     
     public function userPayout($recipient, $amount, $description, $currency = 'usd')
     {
         $params = compact('recipient', 'amount', 'description', 'currency');
         
-        return $this->makeStripeCall('Stripe_Transfer', 'create', $params);
+        return $this->makeStripeCall('\Stripe\Transfer', 'create', $params);
     }
     
     public function chargeCustomer($customer, $amount, $description, $currency = 'usd')
     {
         $params = compact('customer', 'amount', 'description', 'currency');
         
-        return $this->makeStripeCall('Stripe_Charge', 'create', $params);
+        return $this->makeStripeCall('\Stripe\Charge', 'create', $params);
     }
     
     public function checkBalance()
     {
-        return $this->makeStripeCall('Stripe_Balance', 'retrieve');
+        return $this->makeStripeCall('\Stripe\Balance', 'retrieve');
     }
     
     public function checkBalanceTransaction($transactionId)
     {
-        return $this->makeStripeCall('Stripe_BalanceTransaction', 'retrieve', $transactionId);
+        return $this->makeStripeCall('\Stripe\BalanceTransaction', 'retrieve', $transactionId);
     }
     
     public function getStripeTokenData($token, $type = 'card')
     {
-        $response = $this->makeStripeCall('Stripe_Token', 'retrieve', $token);
+        $response = $this->makeStripeCall('\Stripe\Token', 'retrieve', $token);
         
         return $response[$type]->__toArray();
     }
@@ -63,7 +61,7 @@ class PaymentClient
     {
         $params = ['card' => compact('number', 'exp_month', 'exp_year', 'cvc')];
         
-        $data = $this->makeStripeCall('Stripe_Token', 'create', $params);
+        $data = $this->makeStripeCall('\Stripe\Token', 'create', $params);
         
         return $data->id;
     }
@@ -72,14 +70,14 @@ class PaymentClient
     {
         $params = ['bank_account' => compact('account_number', 'routing_number', 'country')];
         
-        $data = $this->makeStripeCall('Stripe_Token', 'create', $params);
+        $data = $this->makeStripeCall('\Stripe\Token', 'create', $params);
         
         return $data->id;
     }
     
     private function makeStripeCall($object, $call, $params = null)
     {
-        Stripe::setApiKey(Configure::read('Stripe.secret'));
+        \Stripe\Stripe::setApiKey(Configure::read('Stripe.secret'));
         
         try {
             if (is_null($params)) {
@@ -119,5 +117,3 @@ class PaymentClient
         return true;
     }
 }
-    
-?>
